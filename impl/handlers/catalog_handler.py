@@ -1,6 +1,7 @@
 from tornado.web import RequestHandler, MissingArgumentError
-from impl.erorrs import NoSuchFileError, NoSuchIdx
-from models.catalog import Catalog
+from crud_playground.impl.erorrs import NoSuchFileError, NoSuchIdx
+from crud_playground.models.catalog import Catalog
+from crud_playground.utils.files import FromCSV
 
 
 class CatalogHandler(RequestHandler):
@@ -15,7 +16,8 @@ class CatalogHandler(RequestHandler):
 
         try:
             product = Catalog.GetByIdx(session, idx)
-            self.write("data corresponding the idx you enter: {!s}".format(product))
+            self.write({'status': 202,
+                        'message': 'data corresponding the idx you enter: {!s}'.format(product)})
         except NoSuchIdx:
             self.write({'status': 404})
         finally:
@@ -26,7 +28,8 @@ class CatalogHandler(RequestHandler):
 
         try:
             file_path = self.get_argument("file_path")
-            Catalog.SaveData(session, file_path)
+            product_obj = FromCSV(file_path)
+            session.add(product_obj)
             session.commit()
 
         except MissingArgumentError:
@@ -43,6 +46,8 @@ class CatalogHandler(RequestHandler):
         idx = self.get_argument("idx")
         try:
             Catalog.DeleteData(session, idx)
+            self.write({'status': 202,
+                        'message': 'Product with idx {!s} has been deleted'.format(idx)})
             session.commit()
         except NoSuchIdx:
             self.write({'status': 404})

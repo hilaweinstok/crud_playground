@@ -1,14 +1,14 @@
 import tornado.ioloop
 import tornado.web
 
-from impl.crud_config import CrudConfig
+from crud_playground.impl.crud_config import CrudConfig
 
 
 def Main():
-    db_url = 'mysql://user:password@port:8888'
-    configurator = CrudConfig(db_url)
+    conf_file = "crud_playground/config/env_config.yaml"
+    configurator = CrudConfig.FromFile(conf_file)
     app = configurator.CreateApp()
-    app.listen(8888)
+    app.listen(configurator.GetPort())
     tornado.ioloop.IOLoop.current().start()
 
 if __name__ == "__main__":

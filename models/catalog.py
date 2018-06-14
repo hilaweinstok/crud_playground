@@ -1,5 +1,3 @@
-import csv
-from impl.erorrs import InvalidData, NoSuchFileError
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy import Table, Column, Integer, String, MetaData
 
@@ -46,26 +44,6 @@ class Catalog(object):
             return session.query(cls).filter(cls.idx == idx).one()
         except NoResultFound:
             raise NoResultFound
-
-
-    @staticmethod
-    def SaveData(session, file_path):
-        try:
-            product = []
-            with open(file_path) as csv_file:
-                reader = csv.DictReader(csv_file)
-                for row in reader:
-                    product.append(Catalog(idx=row['idx'],
-                                           product_name=row['product_name'],
-                                           photo_url=row['photo_url'],
-                                           barcode=row['barcode'],
-                                           price_cents=row['price_cents'],
-                                           producer=row['producer']))
-            session.add(product)
-        except InvalidData:
-            raise InvalidData
-        except NoSuchFileError:
-            raise NoSuchFileError
 
     @staticmethod
     def DeleteData(session, idx):
