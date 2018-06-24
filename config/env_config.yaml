@@ -1,0 +1,3 @@
+DB_URL: mysql://user:password@port:3630
+PORT: 8888
+ENV: LOCAL
