@@ -44,12 +44,3 @@ class Catalog(object):
             return session.query(cls).filter(cls.idx == idx).one()
         except NoResultFound:
             raise NoResultFound
-
-    @staticmethod
-    def DeleteData(session, idx):
-        try:
-            product = Catalog.GetByIdx(session, idx)
-            if product:
-                session.delete(product)
-        except NoResultFound:
-            raise NoResultFound

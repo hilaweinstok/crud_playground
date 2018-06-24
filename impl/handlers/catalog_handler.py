@@ -1,3 +1,4 @@
+from sqlalchemy.orm.exc import NoResultFound
 from tornado.web import RequestHandler, MissingArgumentError
 from crud_playground.impl.erorrs import NoSuchFileError, NoSuchIdx
 from crud_playground.models.catalog import Catalog
@@ -45,13 +46,15 @@ class CatalogHandler(RequestHandler):
         session = self.session_maker()
         idx = self.get_argument("idx")
         try:
-            Catalog.DeleteData(session, idx)
-            self.write({'status': 202,
-                        'message': 'Product with idx {!s} has been deleted'.format(idx)})
+            product = Catalog.GetByIdx(session, idx)
+            if product:
+                session.delete(product)
+                self.write({'status': 202,
+                            'message': 'Product with idx {!s} has been deleted'.format(idx)})
             session.commit()
         except NoSuchIdx:
             self.write({'status': 404})
+        except NoResultFound:
+            raise NoResultFound
         finally:
             session.close()
-
-# TODO hila- implement the put method

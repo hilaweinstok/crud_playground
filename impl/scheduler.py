@@ -1,12 +1,14 @@
-from apscheduler.schedulers.blocking import BlockingScheduler
+import schedule
+import time
+from crud_playground.utils.files import FromCSV
 
-# todo hila : create this
+def job(file_path):
+    print ("Start Parsing CSV")
+    FromCSV(file_path)
 
+file_path = "~/file.csv"
+schedule.every().day.at("10:30").do(job(file_path))
 
-def job():
-    # Make the job run once a day
-    print "Decorated job"
-
-scheduler = BlockingScheduler()
-scheduler.add_job(job, 'interval', days=1)
-scheduler.start()
+while True:
+    schedule.run_pending()
+    time.sleep(1)

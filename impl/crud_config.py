@@ -30,7 +30,7 @@ class CrudConfig(object):
     def CreateApp(self):
         return tornado.web.Application([
             (r"/", tornado.web.RequestHandler),
-            (r"/main_handler", CatalogHandler, dict(session_maker=self.session_maker))
+            (r"/catalog", CatalogHandler, dict(session_maker=self.session_maker))
         ])
 
     def GetTornadoApp(self):
