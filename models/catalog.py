@@ -22,17 +22,19 @@ class Catalog(object):
     """
 
     metadata = MetaData()
-    catalog = Table('catalog', MetaData(bind=None),
-                    Column('idx', Integer, nullable=False, index=True, unique=True),
-                    Column('product_name', String(100), nullable=False),
-                    Column('photo_url', String(100), nullable=True),
-                    Column('barcode', Integer, nullable=False),
-                    Column('price_cents', Integer, nullable=False),
-                    Column('producer', String, nullable=True)
-                    )
+    catalog = Table(
+        "catalog",
+        MetaData(bind=None),
+        Column("idx", Integer, nullable=False, index=True, unique=True),
+        Column("product_name", String(100), nullable=False),
+        Column("photo_url", String(100), nullable=True),
+        Column("barcode", Integer, nullable=False),
+        Column("price_cents", Integer, nullable=False),
+        Column("producer", String, nullable=True),
+    )
 
     @classmethod
-    def GetByIdx(cls, session, idx):
+    def get_by_idx(cls, session, idx):
         """
         Get all catalog data by idx
         session:  SQLAlchemy session object

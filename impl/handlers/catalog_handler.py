@@ -9,18 +9,24 @@ class CatalogHandler(RequestHandler):
     session_maker = None
 
     def initialize(self, *args, **kwargs):
-        self.session_maker = kwargs['session_maker']
+        self.session_maker = kwargs["session_maker"]
 
     def get(self):
         session = self.session_maker()
         idx = self.get_argument("idx")
 
         try:
-            product = Catalog.GetByIdx(session, idx)
-            self.write({'status': 202,
-                        'message': 'data corresponding the idx you enter: {!s}'.format(product)})
+            product = Catalog.get_by_idx(session, idx)
+            self.write(
+                {
+                    "status": 202,
+                    "message": "data corresponding the idx you enter: {!s}".format(
+                        product
+                    ),
+                }
+            )
         except NoSuchIdx:
-            self.write({'status': 404})
+            self.write({"status": 404})
         finally:
             session.close()
 
@@ -34,11 +40,9 @@ class CatalogHandler(RequestHandler):
             session.commit()
 
         except MissingArgumentError:
-            self.write({'status': 400,
-                        'message': 'No such argument'})
+            self.write({"status": 400, "message": "No such argument"})
         except NoSuchFileError:
-            self.write({'status': 404,
-                        'message': 'Are you sure the file exists?'})
+            self.write({"status": 404, "message": "Are you sure the file exists?"})
         finally:
             session.close()
 
@@ -46,14 +50,18 @@ class CatalogHandler(RequestHandler):
         session = self.session_maker()
         idx = self.get_argument("idx")
         try:
-            product = Catalog.GetByIdx(session, idx)
+            product = Catalog.get_by_idx(session, idx)
             if product:
                 session.delete(product)
-                self.write({'status': 202,
-                            'message': 'Product with idx {!s} has been deleted'.format(idx)})
+                self.write(
+                    {
+                        "status": 204,
+                        "message": "Product with idx {!s} has been deleted".format(idx),
+                    }
+                )
             session.commit()
         except NoSuchIdx:
-            self.write({'status': 404})
+            self.write({"status": 404})
         except NoResultFound:
             raise NoResultFound
         finally:

@@ -1,4 +1,3 @@
-
 class NoSuchFileError(Exception):
     pass
 

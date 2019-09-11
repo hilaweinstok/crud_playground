@@ -9,32 +9,34 @@ from crud_playground.impl.handlers.catalog_handler import CatalogHandler
 
 class CrudConfig(object):
     def __init__(self, db_url, port, env):
-        self.session_maker = self.CreateSession(db_url)
+        self.session_maker = self.create_session(db_url)
         self.port = port
         self.env = env
-        self.app = self.CreateApp()
+        self.app = self.create_app()
 
     @staticmethod
-    def CreateSession(db_url):
+    def create_session(db_url):
         engine = create_engine(db_url, echo=False)
         return sessionmaker(engine, autocommit=False, autoflush=False)
 
     @staticmethod
-    def FromFile(file_name):
-        with open(file_name, 'r') as f:
+    def from_file(file_name):
+        with open(file_name, "r") as f:
             config = yaml.load(f)
-            return CrudConfig(db_url=config['DB_URL'],
-                              port=config['PORT'],
-                              env=config['ENV'])
+            return CrudConfig(
+                db_url=config["DB_URL"], port=config["PORT"], env=config["ENV"]
+            )
 
-    def CreateApp(self):
-        return tornado.web.Application([
-            (r"/", tornado.web.RequestHandler),
-            (r"/catalog", CatalogHandler, dict(session_maker=self.session_maker))
-        ])
+    def create_app(self):
+        return tornado.web.Application(
+            [
+                (r"/", tornado.web.RequestHandler),
+                (r"/catalog", CatalogHandler, dict(session_maker=self.session_maker)),
+            ]
+        )
 
-    def GetTornadoApp(self):
+    def get_tornado_app(self):
         return self.app
 
-    def GetPort(self):
+    def get_port(self):
         return self.port
